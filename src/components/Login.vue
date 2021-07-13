@@ -92,7 +92,7 @@
             <button type="submit" class="btn btn-primary">Register</button>
           </div>
         </form>
-          <div v-if="rpiResponse" :class="errColor" class="py-2">
+          <div v-if="rapiResponse" :class="errColor" class="py-2">
           {{rapiResponse }}
         </div>
       </div>
