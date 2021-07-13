@@ -5,13 +5,12 @@
       <button
         type="button"
         class="btn btn-primary float-right my-4"
-        data-toggle="modal"
-        data-target="#myModal"
+        @click="dialog2Visible = true"
       >
         Add Todo
       </button>
     </div>
-    <div v-if="todos==null">You do not have any todos yet</div>
+    <div v-if="todos == null">You do not have any todos yet</div>
     <div v-for="(todo, key) in todos" :key="key">
       <ul class="todo-list">
         <li class="shadow-sm">
@@ -24,51 +23,6 @@
       </ul>
     </div>
   </div>
-  <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-dialog-centered">
-      <form class="w-100" @submit.prevent="addTodo">
-        <div class="modal-content">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Add New Todo</h4>
-            <button type="button" class="close" data-dismiss="modal">
-              &times;
-            </button>
-          </div>
-
-          <!-- Modal body -->
-          <div class="modal-body">
-            <div class="form-group">
-              <input
-                class="form-control"
-                v-model="todo.text"
-                placeholder="Title"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <textarea
-                class="form-control"
-                v-model="todo.description"
-                placeholder="Description"
-                rows="5"
-                required
-              />
-            </div>
-          </div>
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              Close
-            </button>
-            <button class="btn btn-success float-right" type="submit">
-              Add
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
   <el-dialog :title="viewTodo.text" v-model="dialogVisible" width="30%">
     <p>{{ viewTodo.description }}</p>
     <template #footer>
@@ -77,6 +31,35 @@
       </span>
     </template>
   </el-dialog>
+  <form @submit.prevent="addTodo">
+    <el-dialog title="Add Todo" v-model="dialog2Visible" width="30%">
+      <div class="form-group">
+        <input
+          class="form-control"
+          v-model="todo.text"
+          placeholder="Title"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <textarea
+          class="form-control"
+          v-model="todo.description"
+          placeholder="Description"
+          rows="5"
+          required
+        />
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button type="danger" @click="dialog2Visible = false" plain
+            >Close</el-button
+          >
+          <el-button type="success" native-type="submit">Add</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </form>
 </template>
 
 <script>
@@ -95,17 +78,18 @@ export default {
         description: "",
       },
       viewTodo: {},
-      dialogVisible: false
+      dialogVisible: false,
+      dialog2Visible: false,
     };
   },
   setup(props) {
-    let loading = ref(true)
+    let loading = ref(true);
     const { user } = toRefs(props);
     const { todos, getTodos } = getUserTodos(user);
     return {
       todos,
       getTodos,
-      loading
+      loading,
     };
   },
   methods: {
@@ -113,9 +97,15 @@ export default {
       if (this.todo) {
         this.todo.uid = this.uid;
         Todos.addTodo(this.todo).then((res) => {
-         this.todo.text = ''
-         this.todo.description = ''
+          this.todo.text = "";
+          this.todo.description = "";
           console.log("added todo");
+          this.dialog2Visible = false;
+          this.$message({
+          message: "Todo has been added",
+          type: "success",
+          offset: 50
+        });
         });
       }
     },
@@ -124,9 +114,13 @@ export default {
       this.dialogVisible = true;
     },
     delTodo(rmkey) {
-      Todos.removeTodo(rmkey)
-      .then((res) => {
+      Todos.removeTodo(rmkey).then((res) => {
         console.log("removed todo");
+        this.$message({
+          message: "Todo has been deleted",
+          type: "success",
+          offset: 50
+        });
       });
     },
   },
@@ -141,11 +135,11 @@ export default {
   },
   watch: {
     todos() {
-      if(this.todos || this.todos == null) {
-        this.loading = false
+      if (this.todos || this.todos == null) {
+        this.loading = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
