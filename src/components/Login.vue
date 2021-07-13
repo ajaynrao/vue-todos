@@ -92,8 +92,8 @@
             <button type="submit" class="btn btn-primary">Register</button>
           </div>
         </form>
-          <div v-if="rapiResponse" :class="errColor" class="py-2">
-          {{rapiResponse }}
+        <div v-if="rapiResponse" :class="errColor" class="py-2">
+          {{ rapiResponse }}
         </div>
       </div>
     </div>
@@ -195,5 +195,10 @@ export default {
 }
 .container {
   padding-top: 120px;
+}
+@media only screen and (max-width: 768px) {
+  .login-container {
+    width: 90%;
+  }
 }
 </style>

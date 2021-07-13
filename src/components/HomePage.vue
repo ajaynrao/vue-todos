@@ -16,9 +16,13 @@ export default {
     user() {
       return Store.state.user
     }
+  },
+  mounted() {
+    if((localStorage.getItem('user') == "null") || (localStorage.getItem('user') == undefined)) {
+      this.$router.push('/login')
+    }
   }
 };
 </script>
-
 <style scoped>
 </style>

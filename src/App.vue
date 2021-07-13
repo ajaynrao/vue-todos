@@ -24,4 +24,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+@media only screen and (max-width: 768px) {
+  .el-dialog {
+    width: 90% !important;
+  }
+}
 </style>
