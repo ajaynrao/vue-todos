@@ -1,15 +1,23 @@
 <template>
-  <div class="container d-flex flex-column justify-content-center align-items-center">
+  <div
+    class="
+      container
+      d-flex
+      flex-column
+      justify-content-center
+      align-items-center
+    "
+  >
     <!-- <p>User: {{user}}</p> -->
     <div class="login-container shadow p-4 my-5 rounded">
-    <div class="btn-group">
-      <button class="btn btn-primary" @click="activeTab = 'login'">
-        Login
-      </button>
-      <button class="btn btn-primary" @click="activeTab = 'register'">
-        Register
-      </button>
-    </div>
+      <div class="btn-group">
+        <button class="btn btn-primary" @click="activeTab = 'login'">
+          Login
+        </button>
+        <button class="btn btn-primary" @click="activeTab = 'register'">
+          Register
+        </button>
+      </div>
       <div v-if="activeTab === 'login'">
         <h3 class="py-3">Login</h3>
         <form @submit.prevent="LoginUser">
@@ -84,9 +92,6 @@
             <button type="submit" class="btn btn-primary">Register</button>
           </div>
         </form>
-        <div v-if="rapiResponse" :class="errColor" class="py-2">
-          {{ rapiResponse }}
-        </div>
       </div>
     </div>
   </div>
@@ -94,7 +99,7 @@
 
 <script>
 import Users from "../api/users";
-import Store from '../store'
+import Store from "../store";
 export default {
   name: "Login",
   data() {
@@ -102,7 +107,7 @@ export default {
       errColor: "",
       activeTab: "login",
       lapiResponse: "",
-      rapiResponse: '',
+      rapiResponse: "",
       loginForm: {
         email: "",
         password: "",
@@ -118,14 +123,14 @@ export default {
   computed: {
     user() {
       return Store.state.user;
-    }
+    },
   },
   watch: {
     user(user, ouser) {
-      if(user) {
-        this.$router.push('/')
+      if (user) {
+        this.$router.push("/");
       }
-    }
+    },
   },
   methods: {
     LoginUser() {
@@ -134,13 +139,21 @@ export default {
         .then((res) => {
           console.log(res);
           this.lapiResponse = "Login Successul";
-          this.errColor = "text-success";
-          this.$router.push('/');
+          this.$message({
+            message: this.lapiResponse,
+            type: "success",
+            offset: 50,
+          });
+          this.$router.push("/");
         })
         .catch((err) => {
           console.log(err);
           this.lapiResponse = err.message;
-          this.errColor = "text-danger";
+          this.$message({
+            message: this.lapiResponse,
+            type: "error",
+            offset: 50,
+          });
         });
     },
     createUser() {
@@ -148,19 +161,27 @@ export default {
       Users.register(this.registerForm)
         .then((res) => {
           console.log(res);
-          this.rapiResponse = "Registration Successul";
-          this.errColor = "text-success";
+          this.rapiResponse = "Registration Successul, you may now login";
+          this.$message({
+            message: this.rapiResponse,
+            type: "success",
+            offset: 50,
+          });
         })
         .catch((err) => {
           console.log(err);
           this.rapiResponse = err.message;
-          this.errColor = "text-danger";
+          this.$message({
+            message: this.rapiResponse,
+            type: "error",
+            offset: 50,
+          });
         });
     },
   },
   mounted() {
-      console.log("current user", this.user)
-  }
+    console.log("current user", this.user);
+  },
 };
 </script>
 
